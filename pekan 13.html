@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation</title>
+
+    <style>
+        
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <form >
+        <table>
+            <tr>
+                <td><label for="namaPelanggan">Nama Pelanggan</label></td>
+                <td>:<input type="text" id="namaPelanggan" name="namaPelanggan" maxlength="30" required><span id="namaPelangganError" class="error"></span></td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>:<input type="email" id="email" name="email" required><span id="emailError" class="error"></span></td>
+            </tr>
+            <tr>
+                <td>Jam keberangkatan</td>
+                <td>:<input type="text" id="jamKeberangkatan" name="jamKeberangkatan" required><span id="jamKeberangkatanError" class="error"></span></td>
+            </tr>
+            <tr>
+                <td>Tujuan keberangkatan</td>
+                <td>:<input type="text" id="tujuanKeberangkatan" name="tujuanKeberangkatan" required><span id="tujuanKeberangkatanError" class="error"></span></td>
+            </tr>
+            <tr>
+                <td>Jumlah Tiket</td>
+                <td>:<input type="number" id="jumlahTiket" name="jumlahTiket" min="1" max="10" required><span id="jumlahTiketError" class="error"></span></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button type="button" onclick="validateForm()">Submit</button></td>
+            </tr>
+        </table>
+    </form>
+    <div id="result"></div>
+    <script>
+        function validateForm() {
+            var namaPelanggan = document.getElementById('namaPelanggan').value;
+            var email = document.getElementById('email').value;
+            var jamKeberangkatan = document.getElementById('jamKeberangkatan').value;
+            var tujuanKeberangkatan = document.getElementById('tujuanKeberangkatan').value;
+            var jumlahTiket = document.getElementById('jumlahTiket').value;
+
+            var isValid = true;
+
+            isValid = validateField(namaPelanggan, 'namaPelanggan', 'Nama Pelanggan harus diisi (maksimum 30 karakter).') && isValid;
+            isValid = validateField(email, 'email', 'Email tidak valid.') && isValid;
+            isValid = validateTimeFormat(jamKeberangkatan) && isValid;
+            isValid = validateField(tujuanKeberangkatan, 'tujuanKeberangkatan', 'Tujuan Keberangkatan harus diisi.') && isValid;
+            isValid = validateNumber(jumlahTiket, 'jumlahTiket', 'Jumlah Tiket harus bilangan bulat antara 1 dan 10.') && isValid;
+
+            // Tampilkan hasil validasi
+            if (isValid) {
+                var result = 'Data Form Valid:\n\n';
+                result += 'Nama Pelanggan: ' + namaPelanggan + '\n';
+                result += 'Email: ' + email + '\n';
+                result += 'Jam Keberangkatan: ' + jamKeberangkatan + '\n';
+                result += 'Tujuan Keberangkatan: ' + tujuanKeberangkatan + '\n';
+                result += 'Jumlah Tiket: ' + jumlahTiket + '\n';
+
+                document.getElementById('result').innerHTML = result;
+            } else {
+                document.getElementById('result').innerHTML = '';
+            }
+        }
+
+        function validateField(value, fieldName, errorMessage) {
+            if (value.length === 0 || (fieldName === 'namaPelanggan' && value.length > 30)) {
+                document.getElementById(fieldName + 'Error').innerHTML = errorMessage;
+                document.getElementById(fieldName).classList.add('error');
+                return false;
+            } else {
+                document.getElementById(fieldName + 'Error').innerHTML = '';
+                document.getElementById(fieldName).classList.remove('error');
+                return true;
+            }
+        }
+
+        function validateTimeFormat(value) {
+            var jamRegex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+            if (!jamRegex.test(value)) {
+                document.getElementById('jamKeberangkatanError').innerHTML = 'Format Jam Keberangkatan tidak valid (HH:mm).';
+                document.getElementById('jamKeberangkatan').classList.add('error');
+                return false;
+            } else {
+                document.getElementById('jamKeberangkatanError').innerHTML = '';
+                document.getElementById('jamKeberangkatan').classList.remove('error');
+                return true;
+            }
+        }
+
+        function validateNumber(value, fieldName, errorMessage) {
+            if (value < 1 || value > 10 || isNaN(value)) {
+                document.getElementById(fieldName + 'Error').innerHTML = errorMessage;
+                document.getElementById(fieldName).classList.add('error');
+                return false;
+            } else {
+                document.getElementById(fieldName + 'Error').innerHTML = '';
+                document.getElementById(fieldName).classList.remove('error');
+                return true;
+            }
+        }
+    </script>
+</body>
+</html>
